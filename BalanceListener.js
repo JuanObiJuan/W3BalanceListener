@@ -1,10 +1,11 @@
 var Web3 = require('web3')
+var sleep = require('sleep');
 
 //  Init vars
 var gethServerURL = 'http://localhost:8545'
-var account = '0x4c16c4c7dc7d4b241b2164da31f7c397e2d57c71'
+var account = '0xa74dca289a9674edf2ba4c68ab8ecacde3f0b780'
 var balance = 0
-var currentAppStatus = AppStatus.WAIT_SYNC
+
 
 // App status
 const AppStatus = {
@@ -15,9 +16,7 @@ const AppStatus = {
   FINISHED: 4
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+var currentAppStatus = AppStatus.WAIT_SYNC
 
 
 var web3 = new Web3(new Web3.providers.HttpProvider(gethServerURL))
@@ -27,7 +26,7 @@ console.log('base: ' + web3.eth.coinbase)
 
 // Check If the server is in Sync
 while (web3.eth.syncing) {
-  await sleep(1000)
+  sleep.sleep(1)
   console.log('waitin to be in Sync ')
 }
 console.log('In Sync !!')
@@ -37,29 +36,21 @@ web3.personal.unlockAccount(account, 'yourpasswordhere')
 
 //update Balance
 balance = web3.fromWei(web3.eth.getBalance(account), 'ether')
-
+console.log('balance: ' + balance)
 // Wait for new transaction
 currentAppStatus = AppStatus.WAIT_TRANSACTION
 newBalance = web3.fromWei(web3.eth.getBalance(account), 'ether')
-while(newBalance===balance){
+console.log('waitin for a new transaction ')
+while(newBalance=balance){
   newBalance = web3.fromWei(web3.eth.getBalance(account), 'ether')
-  await sleep(1000)
+  sleep.sleep(1)
 }
-
+console.log('newBalance: ' + newBalance)
 console.log('New transaction!!')
 var diff = newBalance-balance;
 //Show POPUP and wait OK
 currentAppStatus = AppStatus.WAIT_OK
 
-
-function init () {
-
-}
-
-//  Main Loop
-function mainLoop () {
-//  Check if is syncing
-}
 
 showStatus()
 
