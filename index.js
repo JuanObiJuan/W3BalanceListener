@@ -9,6 +9,7 @@ var port = process.env.PORT || 3000;
 const EventEmitter = require('events');
 class ServerEmitter extends EventEmitter {}
 const serverEmmiter = new ServerEmitter();
+exports.serverEmmiter = serverEmmiter;
 
 var status = 0;
 var account = "0x0"
@@ -36,7 +37,7 @@ io.on('connection', function(socket) {
   });
 });
 
-exports.serverEmmiter = serverEmmiter;
+
 
 exports.changeStatus = function(newStatus) {
   console.log('changing server status to '+newStatus);
@@ -45,9 +46,23 @@ exports.changeStatus = function(newStatus) {
   return true;
 };
 
+
+
 exports.startServer = function(port) {
+Start(port)
+};
+
+function Start (port) {
   http.listen(port, function() {
     serverEmmiter.emit('init');
     console.log('listening on *:' + port);
   });
-};
+}
+
+process.on('message', function(m) {
+  if (m=='Start') {
+    process.send('Server process: '+m+' OK!');
+    Start(8080);
+  }
+
+});
