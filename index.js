@@ -6,15 +6,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
-const EventEmitter = require('events');
-class ServerEmitter extends EventEmitter {}
-const serverEmmiter = new ServerEmitter();
-exports.serverEmmiter = serverEmmiter;
-
 var status = 0;
 var account = "0x0"
 var balance = 0.0;
-var amount = 0;
+var amount = 0.0;
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -30,39 +25,47 @@ io.on('connection', function(socket) {
   io.emit('set status', status);
 
   socket.on('startCharging', function(startCharging) {
-    console.log('startCharging:' + startCharging);
-    status = 3;
-    io.emit('set status', status);
-    serverEmmiter.emit('startCharging');
+    process.send('click')
   });
 });
 
 
 
-exports.changeStatus = function(newStatus) {
-  console.log('changing server status to '+newStatus);
+function ChangeStatus(newStatus){
+  process.send('status:' + newStatus)
   status = newStatus;
   io.emit('set status', newStatus);
   return true;
-};
-
-
-
-exports.startServer = function(port) {
-Start(port)
-};
-
-function Start (port) {
-  http.listen(port, function() {
-    serverEmmiter.emit('init');
-    console.log('listening on *:' + port);
-  });
 }
+
+
+
+function Start(port){
+  http.listen(port, function() {
+    process.send('listening on *:' + port)
+  });
+  ChangeStatus(0)
+}
+
 
 process.on('message', function(m) {
   if (m=='Start') {
-    process.send('Server process: '+m+' OK!');
     Start(8080);
+  }
+  if (m.startsWith("changeStatus:")) {
+    ChangeStatus(parseInt(m.split(":")[1]))
+  }
+  if (m.startsWith("balance:")) {
+    balance = (parseFloat(m.split(":")[1]))
+    io.emit('set balance', balance);
+  }
+  if (m.startsWith("transaction:")) {
+    amount = (parseFloat(m.split(":")[1]))
+    io.emit('set amount', amount);
+  }
+  if (m.startsWith("coinbase:")) {
+    account = (m.split(":")[1])
+    io.emit('set account', account);
   }
 
 });
