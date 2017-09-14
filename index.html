@@ -133,7 +133,7 @@
 <body>
   <!-- Header -->
   <div class="jumbotron" id="outer">
-    <img src="/static/logo.png" style='height: 400%; width: 100%; object-fit: contain' alt="First Image">
+    <h1 id='title'>Prepaid Charger Point</h1>
     <span class="badge" id="account">Account 0x0</span>
     <span class="badge" id="balance">10.3</span>
   </div>
@@ -153,9 +153,9 @@
         <img src="/static/syncing.jpeg" data-color="black" alt="First Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> syncing</h1>
+            <h1 class="display-3"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span><span id='101'>syncing</span></h1>
             <hr class="my-4">
-            <p>Please wait until this client is in full sync</p>
+            <p id='102'>Please wait until this client is in full sync</p>
           </div>
 
         </div>
@@ -164,9 +164,9 @@
         <img src="/static/waiting.jpg" data-color="firebrick" alt="Second Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3">...waiting for transaction </h1>
+            <h1 class="display-3" id='201'>...waiting for transaction </h1>
             <hr class="my-4">
-            <p>Please make a transfer to #account </p>
+            <p id='202'>Please make a transfer to #account </p>
           </div>
         </div>
       </div>
@@ -174,10 +174,10 @@
         <img src="/static/cable.jpg" data-color="violet" alt="Third Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3">Ready?</h1>
+            <h1 class="display-3" id='301'>Ready?</h1>
             <span class="badge" id="amount">Charge for 10.3 Ethers</span>
             <hr class="my-4">
-            <p>Connect your car and click here to start charging </p>
+            <p id='303'>Connect your car and click here to start charging </p>
             <button type="button" id="okButton" class="btn btn-success btn-lg">Start Charging</button>
           </div>
         </div>
@@ -186,9 +186,9 @@
         <img src="/static/charging.jpg" data-color="lightgreen" alt="Fourth Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> charging</h1>
+            <h1 class="display-3"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span><span id='401'> charging</span></h1>
             <hr class="my-4">
-            <p>Please wait until process has finished</p>
+            <p id='402'>Please wait until process has finished</p>
           </div>
         </div>
       </div>
@@ -196,9 +196,9 @@
         <img src="/static/earth.jpg" data-color="tomato" alt="Fifth Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3">Thank You!!</h1>
+            <h1 class="display-3" id="501">Thank You!!</h1>
             <hr class="my-4">
-            <p>You can now disconnect the cable</p>
+            <p id='502'>You can now disconnect the cable</p>
           </div>
         </div>
       </div>
