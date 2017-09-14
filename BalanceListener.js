@@ -3,55 +3,75 @@ var sleep = require('sleep')
 
 //  Init vars
 var gethServerURL = 'http://localhost:8545'
-var account = '0xa74dca289a9674edf2ba4c68ab8ecacde3f0b780'
+//var account = '0xa74dca289a9674edf2ba4c68ab8ecacde3f0b780'
+var account = '0x4c16c4c7dc7d4b241b2164da31f7c397e2d57c71'
 var balance = 0.0
-
+var transaction = 0.0
 var web3
 
-function Start () {
+if (process.send === undefined) {
+  //This is not a child proccess
+  Start()
+}
+
+function emit(message){
+if (process.send === undefined) { 
+  console.log(message)
+}
+else{
+process.send(message)
+}
+}
+
+
+function Start() {
 
   web3 = new Web3(new Web3.providers.HttpProvider(gethServerURL))
-  process.send('geth:'+gethServerURL)
-  process.send('coinbase:' + web3.eth.coinbase)
+  emit('geth:' + gethServerURL)
+  emit('coinbase:' + account)
 
   // Check If the server is in Sync
   while (web3.eth.syncing) {
-    sleep.sleep(2)
+    sleep.sleep(3)
     console.log('...waitin to be in Sync ')
   }
-
-
   // Unlock Account
   web3.personal.unlockAccount(account, 'yourpasswordhere')
 
   //update Balance
   balance = web3.fromWei(web3.eth.getBalance(account), 'ether')
-  process.send('balance:' + balance)
-  process.send('inSync')
-}
+  emit('balance:' + balance)
+  emit('inSync')
 
-function Listen(){
-  //TODO Listen transaction instead balance and put a trigger
-  balance = web3.fromWei(web3.eth.getBalance(account), 'ether')
-  newBalance = balance
-  process.send('listening for new transaction')
-  while(newBalance=balance){
-    newBalance = web3.fromWei(web3.eth.getBalance(account), 'ether')
-    sleep.sleep(1)
-  }
-  // Wait for new transaction
-  var diff = newBalance-balance
-  balance=newBalance
-  process.send('balance:'+balance)
-  process.send('transaction:'+diff)
-  Listen();
+  const filter = web3.eth.filter('latest')
+  filter.watch((err, res) => {
+    if (err) {
+      console.log(`Watch error: ${err}`)
+    } else {
+      // Update balance
+      web3.eth.getBalance(account, (err, bal) => {
+        if (err) {
+          console.log(`getBalance error: ${err}`);
+        } else {
+          var newBalance = web3.fromWei(bal, "ether")
+          if (newBalance>balance) {
+            var diff = newBalance - balance
+            balance = newBalance
+            transaction = diff
+            emit('balance:' + balance)
+            emit('transaction:' + transaction)
+          }
+        }
+      });
+    }
+  });
+
 }
 
 process.on('message', function(m) {
-  if (m=='Start') {
+  if (m == 'Start') {
     Start();
   }
-  if (m=='Listen') {
-    Listen();
-  }
 });
+
+

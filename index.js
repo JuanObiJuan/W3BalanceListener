@@ -4,7 +4,7 @@ var favicon = require('serve-favicon')
 var path = require('path')
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8080;
 
 var status = 0;
 var account = "0x0"
@@ -40,7 +40,7 @@ function ChangeStatus(newStatus){
 
 
 
-function Start(port){
+function Start(){
   http.listen(port, function() {
     process.send('listening on *:' + port)
   });
@@ -50,7 +50,7 @@ function Start(port){
 
 process.on('message', function(m) {
   if (m=='Start') {
-    Start(8080);
+    Start();
   }
   if (m.startsWith("changeStatus:")) {
     ChangeStatus(parseInt(m.split(":")[1]))
