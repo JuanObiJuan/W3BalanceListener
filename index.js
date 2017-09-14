@@ -21,6 +21,73 @@ app.get('/', function(req, res) {
   	res.sendFile(__dirname + '/index.html');
 });
 
+
+var GoogleSpreadsheet = require('google-spreadsheet');
+
+// spreadsheet key is the long id in the sheets URL
+var doc = new GoogleSpreadsheet('14Hbas_07QpH3SqdVi87vn8khUD3y4QhlNOi_DpI4gqk');
+var sheet;
+var myRows;
+
+
+function getInfoAndWorksheets() {
+    doc.getInfo(function(err, info) {
+      console.log('Loaded doc: '+info.title+' by '+info.author.email);
+      sheet = info.worksheets[0];
+      console.log('sheet 1: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount);
+      //console.log(sheet);
+      sheet.getRows({
+      offset: 0,
+      limit: 20,
+      orderby: 'col2'
+    }, function( err, rows ){
+      //console.log('Read '+rows.length+' rows');
+      myRows = rows;
+      // the row is an object with keys set by the column headers
+      var i = 0;
+      while(rows[i]!=undefined) {
+        //replace
+        console.log(rows[i].german)
+        $('#'+rows[i].part).text(rows[i].german)
+        i=i+1
+      }
+
+      //console.log(rows[0].english)
+      //console.log(rows[0].german)
+      console.log($.html().toString())
+      saveFile($.html().toString())
+    });
+    });
+  }
+
+getInfoAndWorksheets()
+
+var cheerio = require('cheerio')
+var $ = cheerio.load('index.html')
+var fs = require('fs')
+fs.readFile('./index.html', function (err, html) {
+    if (err) {
+        throw err;
+    } else {
+        $ = cheerio.load(html.toString());
+    }
+})
+
+function saveFile(content){
+  var fs = require('fs');
+  fs.writeFile("./index2.html", content, function(err) {
+      if(err) {
+          return console.log(err);
+      }
+
+      console.log("The file was saved!");
+  });
+
+}
+
+
+
+
 app.use('/static', express.static(__dirname + '/public'));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')))
 io.on('connection', function(socket) {
