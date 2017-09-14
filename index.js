@@ -1,18 +1,24 @@
+var fs = require('fs')
 var express = require('express');
-var app = require('express')();
+var http = require('http');
+var app = express();
 var favicon = require('serve-favicon')
 var path = require('path')
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 80;
 
 var status = 0;
 var account = "0x0"
 var balance = 0.0;
-var amount = 0.0;
+var amount = 0.0
+
+server = http.createServer(app);
+var io = require('socket.io')(server);
+
 
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
+	//res.header('Content-type', 'text/html');
+      	//return res.end('<h1>Hello, Secure World!</h1>');
+  	res.sendFile(__dirname + '/index.html');
 });
 
 app.use('/static', express.static(__dirname + '/public'));
@@ -41,10 +47,8 @@ function ChangeStatus(newStatus){
 
 
 function Start(){
-  http.listen(port, function() {
-    process.send('listening on *:' + port)
-  });
-  ChangeStatus(0)
+   server.listen(port)
+   ChangeStatus(0)
 }
 
 

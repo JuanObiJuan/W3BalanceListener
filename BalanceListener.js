@@ -29,7 +29,7 @@ function Start() {
   web3 = new Web3(new Web3.providers.HttpProvider(gethServerURL))
   emit('geth:' + gethServerURL)
   emit('coinbase:' + account)
-
+  console.log(web3.eth.syncing)
   // Check If the server is in Sync
   while (web3.eth.syncing) {
     sleep.sleep(3)
