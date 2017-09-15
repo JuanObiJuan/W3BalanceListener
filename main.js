@@ -49,7 +49,6 @@ webServer.on('message', function(m) {
 //GPIO Control
 var gpiocontrol = cp.fork('./gpiocontrol')
 gpiocontrol.send('ShowIp');
-
 gpiocontrol.on('message', function(m) {
   // Receive messages from w3Logic process
   console.log('gpiocontrol --> ' + m);
@@ -80,6 +79,7 @@ function UpdateCoinbase(account){
 
 function NewTransaction(amount){
   transaction = amount
+  gpiocontrol.send('SetText:New Transaction'+'/n'+'Amount: '+amount );
   webServer.send('transaction:'+transaction)
   webServer.send('changeStatus:'+2)
   waitPress=true
@@ -97,6 +97,7 @@ function UserClickWebButton(){
 }
 function StartCharging(){
     if(waitPress){
+    gpiocontrol.send('SetText:...charging');
     waitPress=false
     webServer.send('changeStatus:'+3)
     setTimeout(ShowFinalScreen,10000)
@@ -104,10 +105,12 @@ function StartCharging(){
 }
 
 function ShowFinalScreen(){
+    gpiocontrol.send('SetText:...Thank you!!');
     webServer.send('changeStatus:'+4)
     setTimeout(WaitForTransaction,10000)
 }
 
 function WaitForTransaction(){
+    gpiocontrol.send('SetText:waiting for '+'/n'+'transaction!!');
     webServer.send('changeStatus:'+1)
 }

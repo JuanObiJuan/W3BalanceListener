@@ -61,6 +61,13 @@ function ShowIP(){
   i2c1.closeSync();
 }
 
+function SetText(text){
+  var i2c1 = i2c.openSync(1);
+  setText(i2c1,text);
+  setRGB(i2c1, 55, 255, 55);
+  i2c1.closeSync();
+}
+
 function Buzz(value){
  buzz.writeSync(value)
 }
@@ -102,6 +109,7 @@ function ToggleLED(){
 
 function StopBlinkingLed(){
   clearInterval(blinking);
+  led.writeSync(0)
 }
 
 function StartBlinkingLed(){
@@ -112,6 +120,7 @@ function StartBlinkingLed(){
 StartBlinkingLed()
 sleep.sleep(1)
 ShowIP()
+sleep.sleep(1)
 BuzzShort()
 
 process.on('message', function(m) {
@@ -132,5 +141,8 @@ process.on('message', function(m) {
   }
   if (m == 'BlinkLed') {
     StartBlinkingLed();
+  }
+  if (m.startsWith("SetText:")) {
+    SetText(m.split(":")[1])
   }
 });
