@@ -1,17 +1,67 @@
+var Gpio = require('onoff').Gpio,
+    led = new Gpio(22, 'out'),
+    buzz = new Gpio(4,'out'),
+    button = new Gpio(27,'in','both');
+
 var i2c = require('./node_modules/i2c-bus/i2c-bus');
 var sleep = require('./node_modules/sleep/');
-var Gpio = require('onoff').Gpio,
-  led = new Gpio(7, 'out'),
-  buzz = new Gpio(20,'out'),
-  button = new Gpio(21,'in','both');
 
 var ip = require('ip')
-var os = require("os");
-
-var hostname = os.hostname();
 
 var DISPLAY_RGB_ADDR = 0x62;
 var DISPLAY_TEXT_ADDR = 0x3e;
+
+// commands
+var LCD_CLEARDISPLAY = 0x01
+var LCD_RETURNHOME = 0x02
+var LCD_ENTRYMODESET = 0x04
+var LCD_DISPLAYCONTROL = 0x08
+var LCD_CURSORSHIFT = 0x10
+var LCD_FUNCTIONSET = 0x20
+var LCD_SETCGRAMADDR = 0x40
+var LCD_SETDDRAMADDR = 0x80
+
+// flags for display entry mode
+var LCD_ENTRYRIGHT = 0x00
+var LCD_ENTRYLEFT = 0x02
+var LCD_ENTRYSHIFTINCREMENT = 0x01
+var LCD_ENTRYSHIFTDECREMENT = 0x00
+
+//flags for Display on off control
+var LCD_DISPLAYON = 0x04
+var LCD_DISPLAYOFF = 0x00
+var LCD_CURSORON = 0x02
+var LCD_CURSOROFF = 0x00
+var LCD_BLINKON = 0x01
+var LCD_BLINKOFF = 0x00
+
+// flags for display/cursor shift
+var LCD_DISPLAYMOVE = 0x08
+var LCD_CURSORMOVE = 0x00
+var LCD_MOVERIGHT = 0x04
+var LCD_MOVELEFT = 0x00
+
+// flags for function set
+var LCD_8BITMODE = 0x10
+var LCD_4BITMODE = 0x00
+var LCD_2LINE = 0x08
+var LCD_1LINE = 0x00
+var LCD_5x10DOTS = 0x04
+var LCD_5x8DOTS = 0x00
+
+var red = [255, 10, 10]
+var green = [10, 255, 10]
+var blue = [10, 10, 255]
+var white = [255, 255, 255]
+
+var colorSelected=blue
+
+function SetTextColor(text,color){
+  var i2c1 = i2c.openSync(1);
+  setText(i2c1,text);
+  setRGB(i2c1,color[0],color[1],color[2]);
+  i2c1.closeSync();
+}
 
 function setRGB(i2c1, r, g, b) {
   i2c1.writeByteSync(DISPLAY_RGB_ADDR,0,0)
@@ -27,9 +77,7 @@ function textCommand(i2c1, cmd) {
 }
 
 function setText(i2c1, text) {
-  sleep.usleep(50000)
   textCommand(i2c1, 0x01) // clear display
-  sleep.usleep(50000);
   textCommand(i2c1, 0x08 | 0x04) // display on, no cursor
   textCommand(i2c1, 0x28) // 2 lines
   sleep.usleep(50000);
@@ -51,21 +99,27 @@ function setText(i2c1, text) {
 }
 
 button.watch(function(err, value) {
+   if(process.send!=undefined){
    process.send('Button')
+   }
+   //console.log('button')
 });
 
 function ShowIP(){
-  var i2c1 = i2c.openSync(1);
-  setText(i2c1,ip.address()+' \n'+'8080');
-  setRGB(i2c1, 55, 255, 55);
-  i2c1.closeSync();
+  var ipaddress = ip.address()
+  console.log(ipaddress)
+  SetTextColor('WEB Interface:'+'\n'+ipaddress,colorSelected)
 }
 
-function SetText(text){
-  var i2c1 = i2c.openSync(1);
-  setText(i2c1,text);
-  setRGB(i2c1, 55, 255, 55);
-  i2c1.closeSync();
+function ShowText(content){
+  SetTextColor(content,colorSelected)
+}
+
+function SetColor(newColor){
+  if(newColor==='red'){colorSelected=red}
+  if(newColor==='green'){colorSelected=green}
+  if(newColor==='blue'){colorSelected=blue}
+  if(newColor==='white'){colorSelected=white}
 }
 
 function Buzz(value){
@@ -91,7 +145,7 @@ function BuzzShort(){
 
 function BuzzLong(){
  BuzzOn()
- setTimeout(BuzzOff,1000)
+ setTimeout(BuzzOff,3000)
 }
 
 function Led(value){
@@ -100,6 +154,7 @@ function Led(value){
 
 var ledStatus = false;
 var blinking;
+
 function ToggleLED(){
   var value = 0
   if (ledStatus){value=1}
@@ -118,9 +173,7 @@ function StartBlinkingLed(){
 }
 
 StartBlinkingLed()
-sleep.sleep(1)
 ShowIP()
-sleep.sleep(1)
 BuzzShort()
 
 process.on('message', function(m) {
@@ -128,10 +181,10 @@ process.on('message', function(m) {
     ShowIP();
   }
   if (m == 'SwitchLedOn') {
-    Led(true);
+    Led(1);
   }
   if (m == 'SwitchLedOff') {
-    Led(false);
+    Led(0);
   }
   if (m == 'BuzzShort') {
     BuzzShort();
@@ -142,7 +195,11 @@ process.on('message', function(m) {
   if (m == 'BlinkLed') {
     StartBlinkingLed();
   }
-  if (m.startsWith("SetText:")) {
-    SetText(m.split(":")[1])
+  if (m.startsWith("ShowText:")) {
+    ShowText(m.split(":")[1])
   }
+  if (m.startsWith("SetColor:")) {
+    SetColor(m.split(":")[1])
+  }
+
 });

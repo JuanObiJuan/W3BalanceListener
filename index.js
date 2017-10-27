@@ -75,7 +75,7 @@ fs.readFile('./index.html', function (err, html) {
 
 function saveFile(content){
   var fs = require('fs');
-  fs.writeFile("./index2.html", content, function(err) {
+  fs.writeFile("./index.html", content, function(err) {
       if(err) {
           return console.log(err);
       }
@@ -102,8 +102,6 @@ io.on('connection', function(socket) {
   });
 });
 
-
-
 function ChangeStatus(newStatus){
   process.send('status:' + newStatus)
   status = newStatus;
@@ -111,13 +109,15 @@ function ChangeStatus(newStatus){
   return true;
 }
 
-
-
 function Start(){
    server.listen(port)
    ChangeStatus(0)
 }
 
+if (process.send===undefined){
+console.log('standalone mode')
+Start()
+}
 
 process.on('message', function(m) {
   if (m=='Start') {
@@ -137,6 +137,9 @@ process.on('message', function(m) {
   if (m.startsWith("coinbase:")) {
     account = (m.split(":")[1])
     io.emit('set account', account);
+  }
+  if (m.startsWith("progress:")){
+    io.emit('progress',m.split(":")[1])
   }
 
 });

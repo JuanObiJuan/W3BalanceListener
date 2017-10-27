@@ -1,7 +1,4 @@
-<!doctype html>
-<html>
-
-<head>
+<!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <title>Charging App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,6 +7,89 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
   <style>
+div#sub2 {
+    margin-top: -2px;
+}
+div#progressid {
+    margin-right: 0px;
+    margin-left: 10px;
+}
+div#progressbar01 {
+    margin-bottom: 0px;
+    margin-left: 10px;
+    width: 90%;
+    margin-right: 10px;
+}
+.label-danger {
+    background-color: rgba(217, 83, 79, 0.71);
+}
+span#chargingId {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+}
+h1.display-3 {
+    display: inline-flex;
+}
+.progress-bar {
+    float: inherit;
+    width: 0;
+    height: 100%;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    background-color: rgba(183, 51, 51, 0.71);
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+    -webkit-transition: width .6s ease;
+    -o-transition: width .6s ease;
+    transition: width .6s ease;
+}
+
+div#progressbar01 {
+    margin-left: 10px;
+    /* align-content: center; */
+    width: 90%;
+    margin-right: 10px;
+}
+.carousel-caption .btn {
+    width: 77%;
+    margin-bottom: 10px;
+}
+.carousel-caption {
+    position: absolute;
+    right: 10px;
+    left: 10px;
+    bottom: 0px;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+hr.my-4 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+img#logo {
+    width: 40px;
+    margin: 0px;
+    padding-right: 5px;
+}
+div#block {
+    display: -webkit-inline-box;
+    -webkit-box-align: baseline;
+}
+span#balance {
+    margin-left: 5px;
+    font-size: xx-large;
+}
+    div#outer p {
+      color: silver;
+      font-size: larger;
+    }
+
     h3 {
       padding: 10px;
       background: rgba(51, 51, 51, 0.49);
@@ -33,10 +113,9 @@
     }
 
     .jumbotron {
-      padding-top: 30px;
-      padding-bottom: 30px;
-      margin-bottom: 30px;
-      margin-top: 30px;
+      padding-top: 0px;
+      padding-bottom: 0px; 
+      margin-bottom: 5px;
       color: inherit;
       background-color: rgba(8, 8, 8, 0.44);
       border-radius: 10px;
@@ -48,15 +127,17 @@
     }
 
     #outer {
-      position: absolute;
-      background-color: rgba(8, 8, 8, 0.8);
-      left: 25%;
-      right: 25%;
-      bottom: 60%;
-      top: 5%;
-      z-index: 1;
-      text-align: center;
-    }
+    right: 10px;
+    color: whitesmoke;
+    position: absolute;
+    background-color: rgba(8, 8, 8, 0.6);
+    top: 25px;
+    align-content: center;
+    z-index: 1;
+    text-align: center;
+    border-radius: 10px;
+    left: 10px;
+}
 
     @-webkit-keyframes spin2 {
       from {
@@ -132,10 +213,15 @@
 
 <body>
   <!-- Header -->
-  <div class="jumbotron" id="outer">
-    <h1 id='title'>Prepaid Charger Point</h1>
-    <span class="badge" id="account">Account 0x0</span>
-    <span class="badge" id="balance">10.3</span>
+  <div id="outer">
+    <h1 id="title">Prepaid Charger Point</h1>
+    <hr class="my-4">
+<div id="block">
+    <img id="logo" src="/static/carcharge.png"><p id="subtitle">Charge here your car and pay in ethers!</p>
+</div>
+    <hr class="my-4">
+    <p><span class="badge" id="account_number">0x0</span></p>
+    <div id="sub2"><p id="3rdline"><span id="total">Total Balance</span><span class="badge" id="balance">10.92</span><span> ethers</span></p></div>
   </div>
   <div id="mycarousel" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
@@ -153,9 +239,9 @@
         <img src="/static/syncing.jpeg" data-color="black" alt="First Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span><span id='101'>syncing</span></h1>
+            <h1 class="display-3"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span><span id="101">Syncing</span></h1>
             <hr class="my-4">
-            <p id='102'>Please wait until this client is in full sync</p>
+            <p id="102">Bitte warten, w&#xE4;hren der Client synchronisiert</p>
           </div>
 
         </div>
@@ -164,9 +250,9 @@
         <img src="/static/waiting.jpg" data-color="firebrick" alt="Second Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3" id='201'>...waiting for transaction </h1>
+            <h1 class="display-3" id="201">...warten auf Transaktion</h1>
             <hr class="my-4">
-            <p id='202'>Please make a transfer to #account </p>
+            <p id="202">Bitte &#xFC;bertrage sie Ihren Betrag an #account</p>
           </div>
         </div>
       </div>
@@ -174,11 +260,11 @@
         <img src="/static/cable.jpg" data-color="violet" alt="Third Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3" id='301'>Ready?</h1>
+            <h1 class="display-3" id="301">Bereit?</h1>
             <span class="badge" id="amount">Charge for 10.3 Ethers</span>
             <hr class="my-4">
-            <p id='303'>Connect your car and click here to start charging </p>
-            <button type="button" id="okButton" class="btn btn-success btn-lg">Start Charging</button>
+            <p id="303">Verbinden Sie Ihren Verbraucher und dr&#xFC;cken sie hier, um den Ladevorgang zu beginnen.</p>
+            <button type="button" id="okButton" class="btn btn-success btn-lg">Starten</button>
           </div>
         </div>
       </div>
@@ -186,9 +272,18 @@
         <img src="/static/charging.jpg" data-color="lightgreen" alt="Fourth Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span><span id='401'> charging</span></h1>
+            <h1 class="display-3"><!-- <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> --><span id="401">... l&#xE4;dt</span>
+  <span class="label label-danger" id="chargingId">0.2</span></h1>
             <hr class="my-4">
-            <p id='402'>Please wait until process has finished</p>
+            <div id="progressid">
+<div class="progress" id="progressbar01">
+  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+    100%
+  </div>
+</div>
+            </div>
+            <hr class="my-4">
+            <p id="402">Bitte warten Sie bis der Vorgang beendet ist.</p>
           </div>
         </div>
       </div>
@@ -196,9 +291,9 @@
         <img src="/static/earth.jpg" data-color="tomato" alt="Fifth Image">
         <div class="carousel-caption">
           <div class="jumbotron">
-            <h1 class="display-3" id="501">Thank You!!</h1>
+            <h1 class="display-3" id="501">Vielen Dank</h1>
             <hr class="my-4">
-            <p id='502'>You can now disconnect the cable</p>
+            <p id="502">Sie k&#xF6;nnen die Kableverbindung nun l&#xF6;sen.</p>
           </div>
         </div>
       </div>
@@ -236,17 +331,26 @@
   <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
   <script>
     $(function() {
+      var transaction = 0.0;
       var socket = io();
 
       socket.on('set account', function(account) {
-        $('#account')[0].innerHTML = "Account " + account;
+        $('#account_number')[0].innerHTML = account;
       });
       socket.on('set balance', function(balance) {
         $('#balance')[0].innerHTML = balance;
       });
       socket.on('set amount', function(amount) {
-        $('#amount')[0].innerHTML = "Charge for " + amount + " Ethers";
-
+        transaction = amount;
+        $('#amount')[0].innerHTML = "Energiemenge im Wert von "+amount+" Ether verf&uuml;gbar";
+      });
+      socket.on('progress', function(progress){
+       console.log('p'+progress)
+       console.log('t'+transaction)
+       var percent = Math.floor((progress/transaction)*100)
+       $('#chargingId')[0].innerHTML=parseFloat(progress).toFixed(3); 
+       $('.progress-bar-striped').css('width', percent+'%').attr('aria-valuenow', percent);
+       $('.progress-bar-striped')[0].innerHTML = percent+'%'
       });
       socket.on('set status', function(msg) {
         $('#mycarousel').carousel(parseInt(msg));
@@ -268,17 +372,19 @@
           audio.play();
         }
       });
-
       $('#okButton').click(function() {
         socket.emit('startCharging', 'startCharging');
       });
-
-
-
-
     });
   </script>
 
-</body>
 
-</html>
+
+
+
+
+
+
+
+
+</body></html>

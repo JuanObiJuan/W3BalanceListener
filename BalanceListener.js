@@ -11,6 +11,7 @@ var web3
 
 if (process.send === undefined) {
   //This is not a child proccess
+  console.log('standalone mode')
   Start()
 }
 
@@ -27,6 +28,12 @@ process.send(message)
 function Start() {
 
   web3 = new Web3(new Web3.providers.HttpProvider(gethServerURL))
+  
+  if(!web3.isConnected()){
+    console.log('geth not connected')
+    setTimeout(Start,2000)
+    return
+  }
   emit('geth:' + gethServerURL)
   emit('coinbase:' + account)
   console.log(web3.eth.syncing)
